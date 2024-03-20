@@ -1,6 +1,7 @@
-# Load balancing
+# Load balancer Prototype
 
-Simple load balaner setup using Docker and a python http server
+Simple load balancer to be used for prototyping 
+- Setup using Docker image HAProxy and python http server
 
 ## Prerequisites
 
@@ -12,7 +13,7 @@ Simple load balaner setup using Docker and a python http server
 quickstart.sh 4
 ```
 
-## Start load balancer
+## Start Loadbalancer
 
 build the Docker image
 
@@ -36,9 +37,9 @@ Access loadbalancer stats doesn't work yet
 
 <localhost:8080/haproxy?stats>
 
-### start servers
+### Start servers
 
-From a terminal
+From terminal
 
 ```pwsh
 docker exec -it my-running-haproxy sh -c "python /usr/local/src/main.py -s <number of servers>"
@@ -56,7 +57,7 @@ python main.py                  # starts 1 server
 python main.py -s 4             # starts 4 servers
 ```
 
-### spawn multiple clients WORK in progress
+### Spawn multiple clients WORK in progress
 
 
 Endpoint is a accessible on <http://localhost:8080/?integer=42>
