@@ -8,10 +8,12 @@ Simple load balancer to be used for prototyping
 
 - Docker
 
-## Quickstart with 4 servers
+## Quickstart
+
+builds, starts the container and spawns 4 servers, minimum 1 server available and a 1% crash probability
 
 ```cmd
-quickstart.sh 4
+quickstart.sh 4 1 0.01
 ```
 
 ## Start Loadbalancer
@@ -22,7 +24,7 @@ build the Docker image
 docker build -t my-haproxy .
 ```
 
-Check the configuration file
+Validate the configuration file
 
 ```pwsh
 docker run -it --rm --name haproxy-syntax-check my-haproxy haproxy -c -f /usr/local/etc/haproxy/haproxy.cfg
@@ -42,7 +44,7 @@ From terminal
 docker exec -it my-running-haproxy sh -c "python /usr/local/src/main.py -s <number of servers>"
 ```
 
-From inside the docker container ensure in the right directory.
+From inside the Docker container.
 
 ```sh
 cd /usr/local/src/
@@ -56,7 +58,7 @@ python main.py -s 4             # starts 4 servers
 
 ### Spawn multiple clients
 
-Spawn N clients accessing the endpoint <http://localhost:8080/?integer=42> in asynchronous threads and writes to ***"logs/curl_output_clients_N.log"*** .
+Spawn N simple clients accessing the endpoint <http://localhost:8080/?integer=42> with curl in asynchronous threads and writing to ***"logs/curl_output_clients_N.log"*** .
 
 ```pwsh
 .\scripts\spawnClients.sh <N:default=100>
