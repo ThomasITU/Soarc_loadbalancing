@@ -29,12 +29,8 @@ docker run -it --rm --name haproxy-syntax-check my-haproxy haproxy -c -f /usr/lo
 Run the Docker cotaniner starts the loadbalancer
 
 ```pwsh
-docker run -d -p 8080:80 --name my-running-haproxy --sysctl net.ipv4.ip_unprivileged_port_start=0 my-haproxy
+docker run -d -p 8080:80 -p 8404:8404 --name my-running-haproxy --sysctl net.ipv4.ip_unprivileged_port_start=0 my-haproxy
 ```
-
-Access loadbalancer stats doesn't work yet
-
-<localhost:8080/haproxy?stats>
 
 ### start servers
 
@@ -58,7 +54,6 @@ python main.py -s 4             # starts 4 servers
 
 ### spawn multiple clients WORK in progress
 
-
 Endpoint is a accessible on <http://localhost:8080/?integer=42>
 
 ```pwsh
@@ -66,3 +61,7 @@ curl <http://localhost:8080/?integer=42>
 ```
 
 ### Access metrics WORK in progress
+
+Logs are available in the Docker container /var/log/haproxy-traffic.log, maybe mount as volume?
+
+Access loadbalancer stats from url <localhost:8404/> this can be exported to csv, total ![Display of stats](imgs/Stats.png)

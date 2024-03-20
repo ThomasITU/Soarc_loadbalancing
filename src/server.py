@@ -1,7 +1,7 @@
 import http.server
 import json
 from urllib.parse import urlparse, parse_qs
-from socketserver import BaseServer, ThreadingMixIn
+from socketserver import ThreadingMixIn
 import threading
 import random
 
@@ -14,7 +14,6 @@ class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         
         if random.random() < CHANCE_TO_STOP: 
             stop(self.server)
-
 
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
@@ -32,7 +31,6 @@ class SimpleHttpServerAdapter:
     def __init__(self, port):
         self.server = ThreadingHTTPServer(("localhost", port), MyRequestHandler)
        
-
     def start(self):
         print(f"Starting server on port {self.server.server_port}")
         thread = threading.Thread(target=self.server.serve_forever)
