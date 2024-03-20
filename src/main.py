@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     servers = [SimpleHttpServerAdapter(port) for port in range(PORT_START, PORT_START+config.number_of_servers)]
     for server in servers:
-        server.start()
+        server.start(config.min_servers_up, config.chance_to_stop)
 
     print(f"servers are running: type anything to shut down")
     wait = input()

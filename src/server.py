@@ -6,12 +6,12 @@ import threading
 import random
 import config
 
+
 CHANCE_TO_STOP = config.chance_to_stop
 MIN_SERVERS_UP = config.min_servers_up
 
-
 # Create a lock for synchronizing access to servers_running
-servers_running = 0
+servers_running = 0 
 servers_running_lock = threading.Lock()
 
 class MyRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -19,7 +19,9 @@ class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         query_params = parse_qs(urlparse(self.path).query)
         integer_arg = int(query_params.get('integer', [0])[0])
         
-        if random.random() < CHANCE_TO_STOP and servers_running > MIN_SERVERS_UP: 
+        global servers_running
+        servers_running = servers_running
+        if random.random() < CHANCE_TO_STOP and servers_running > MIN_SERVERS_UP:
             stop(self.server)
 
         self.send_response(200)
@@ -38,9 +40,15 @@ class SimpleHttpServerAdapter:
     def __init__(self, port):
         self.server = ThreadingHTTPServer(("localhost", port), MyRequestHandler)
        
-    def start(self):
+    def start(self, min_servers_up, chance_to_stop):
         print(f"Starting server on port {self.server.server_port}")
         thread = threading.Thread(target=self.server.serve_forever)
+        
+        # set global variables  
+        global MIN_SERVERS_UP
+        global CHANCE_TO_STOP
+        MIN_SERVERS_UP = min_servers_up 
+        CHANCE_TO_STOP = chance_to_stop
         thread.start()
         with servers_running_lock:
             global servers_running 
