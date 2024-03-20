@@ -4,15 +4,22 @@ from urllib.parse import urlparse, parse_qs
 from socketserver import ThreadingMixIn
 import threading
 import random
+import config
 
-CHANCE_TO_STOP = 0.1 # 10%
+CHANCE_TO_STOP = config.chance_to_stop
+MIN_SERVERS_UP = config.min_servers_up
+
+
+# Create a lock for synchronizing access to servers_running
+servers_running = 0
+servers_running_lock = threading.Lock()
 
 class MyRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         query_params = parse_qs(urlparse(self.path).query)
         integer_arg = int(query_params.get('integer', [0])[0])
         
-        if random.random() < CHANCE_TO_STOP: 
+        if random.random() < CHANCE_TO_STOP and servers_running > MIN_SERVERS_UP: 
             stop(self.server)
 
         self.send_response(200)
@@ -35,6 +42,9 @@ class SimpleHttpServerAdapter:
         print(f"Starting server on port {self.server.server_port}")
         thread = threading.Thread(target=self.server.serve_forever)
         thread.start()
+        with servers_running_lock:
+            global servers_running 
+            servers_running += 1 # Increment the count of running servers
 
     def stop(self):
         stop(self.server)
@@ -43,3 +53,6 @@ def stop(server:ThreadingHTTPServer):
     print(f"Stopping server on port {server.server_port}")
     server.shutdown()
     server.server_close()
+    with servers_running_lock:
+        global servers_running 
+        servers_running -= 1 # Decrement the count of running servers
