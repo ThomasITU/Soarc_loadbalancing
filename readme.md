@@ -1,6 +1,7 @@
 # Load balancer Prototype
 
-Simple load balancer to be used for prototyping 
+Simple load balancer to be used for prototyping
+
 - Setup using Docker image HAProxy and python http server
 
 ## Prerequisites
@@ -53,16 +54,20 @@ python main.py                  # starts 1 server
 python main.py -s 4             # starts 4 servers
 ```
 
-### Spawn multiple clients WORK in progress
+### Spawn multiple clients
 
-Endpoint is a accessible on <http://localhost:8080/?integer=42>
+Spawn N clients accessing the endpoint <http://localhost:8080/?integer=42> in asynchronous threads and writes to ***"logs/curl_output_clients_N.log"*** .
 
 ```pwsh
-curl <http://localhost:8080/?integer=42>
+.\scripts\spawnClients.sh <N:default=100>
 ```
 
 ### Access metrics WORK in progress
 
 Logs are available in the Docker container /var/log/haproxy-traffic.log, maybe mount as volume?
 
-Access loadbalancer stats from url <localhost:8404/> this can be exported to csv, total ![Display of stats](imgs/Stats.png)
+More about the HAProxy logging and logging format [here](https://www.haproxy.com/blog/introduction-to-haproxy-logging).
+
+
+Access loadbalancer stats from url <localhost:8404/> this can be exported to csv. - See the total column for # of succes/errors response ![Display of stats](imgs/Stats.png)
+Explore more info about the HAProxy stat page [here](https://www.haproxy.com/blog/exploring-the-haproxy-stats-page).
