@@ -1,17 +1,19 @@
 import http.server
 import json
 from urllib.parse import urlparse, parse_qs
-from socketserver import ThreadingMixIn
+from socketserver import BaseServer, ThreadingMixIn
 import threading
+import random
+
+CHANCE_TO_STOP = 0.1 # 10%
 
 class MyRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         query_params = parse_qs(urlparse(self.path).query)
         integer_arg = int(query_params.get('integer', [0])[0])
         
-        # add random chance to stop server 
-        # if random number < 0.95: stop
-        # log server port stopped
+        if random.random() < CHANCE_TO_STOP: 
+            stop(self.server)
 
 
         self.send_response(200)
@@ -29,6 +31,7 @@ class ThreadingHTTPServer(ThreadingMixIn, http.server.HTTPServer):
 class SimpleHttpServerAdapter:
     def __init__(self, port):
         self.server = ThreadingHTTPServer(("localhost", port), MyRequestHandler)
+       
 
     def start(self):
         print(f"Starting server on port {self.server.server_port}")
@@ -36,6 +39,9 @@ class SimpleHttpServerAdapter:
         thread.start()
 
     def stop(self):
-        print(f"Stopping server on port {self.server.server_port}")
-        self.server.shutdown()
-        self.server.server_close()
+        stop(self.server)
+
+def stop(server:ThreadingHTTPServer):
+    print(f"Stopping server on port {server.server_port}")
+    server.shutdown()
+    server.server_close()
