@@ -2,7 +2,9 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import config
+import argparse
 
+LOADBALANCER_ADDRESS = config.address 
 class ResilientClient:
     def __init__(self, url, retries=3):
         self.url = url
@@ -25,7 +27,17 @@ class ResilientClient:
             print(f'An error occurred: {err}')
 
 if __name__ == "__main__":
-    client = ResilientClient("http://localhost:8080/?integer=21", 3)
+    parser = argparse.ArgumentParser(description='Process optional flag client.')
+    parser.add_argument('-a', type=str, help='address of the loadbalancer default = "localhost"', dest='address')
+
+    args = parser.parse_args()
+    
+    if args.address is not None:
+        LOADBALANCER_ADDRESS = args.address
+    print(LOADBALANCER_ADDRESS)
+ 
+    client = ResilientClient(f"http://{LOADBALANCER_ADDRESS}:8080/?integer=21", 3)
     for i in range(0, config.number_of_client_requests):
         response = client.get()
         print(response)
+ 

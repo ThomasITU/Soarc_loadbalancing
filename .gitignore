@@ -2,5 +2,5 @@ src/__pycache__/
 *.pyc
 *.pyo
 *.pyd
-logs/
+logs/*
 *.log
