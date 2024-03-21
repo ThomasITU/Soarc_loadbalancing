@@ -9,7 +9,7 @@ class ResilientClient:
     def __init__(self, url, retries=3):
         self.url = url
         self.session = requests.Session()
-        retries = Retry(total=retries, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+        retries = Retry(total=retries, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
         self.session.mount('http://', HTTPAdapter(max_retries=retries))
 
     def get(self):

@@ -42,6 +42,8 @@ From terminal
 
 ```pwsh
 docker exec -it my-running-haproxy sh -c "python /usr/local/src/main.py -s <#no of servers> -m <minimum #no of servers to keep alive> -p <chance of server shutting down>"
+docker exec -it my-running-haproxy sh -c "python /usr/local/src/main.py -s 10 -m 5 -p 0.01"
+
 ```
 
 From inside the Docker container.
