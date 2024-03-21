@@ -34,10 +34,9 @@ if __name__ == "__main__":
     
     if args.address is not None:
         LOADBALANCER_ADDRESS = args.address
-    print(LOADBALANCER_ADDRESS)
  
     client = ResilientClient(f"http://{LOADBALANCER_ADDRESS}:8080/?integer=21", 3)
     for i in range(0, config.number_of_client_requests):
         response = client.get()
-        print(response)
+        # print(response)
  

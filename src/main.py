@@ -2,15 +2,33 @@ from server import SimpleHttpServerAdapter
 import argparse
 import config
 
-# define port range
-PORT_START = 8000
+def main():
+
+    servers = [create_server(port) for port in range(config.start_port, config.start_port+config.number_of_servers)]
+    for server in servers:
+        if server:
+            server.start(config.min_servers_up, config.chance_to_stop)
+
+    _ = input()
+    for server in servers:
+        if server:
+            server.stop()
+    print("shutdown servers")
+# Ease creating servers when servers are already running 
+def create_server(port):
+        try:
+            return SimpleHttpServerAdapter(port)
+        except Exception as e: # Catch any exception that might occur
+            print(f"Error creating server on port {port}: {e}")
+            return None # Return None or any other value to indicate failure
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process optional flag for amount of servers.')
+
+    # parse optional args
+    parser = argparse.ArgumentParser(description='Process optional arguments for creating the servers.')
     parser.add_argument('-s', type=int, help='An optional for amount of servers default = 1', dest='servers')
     parser.add_argument('-m', type=int, help='An optional for minimum amount of servers default = 1', dest='min_servers')
     parser.add_argument('-p', type=float, help='Probability of server shutdown as float default = 0.01', dest='probability')
-
     args = parser.parse_args()
     
     if args.servers is not None:
@@ -20,13 +38,9 @@ if __name__ == "__main__":
     if args.probability is not None:
         config.chance_to_stop = args.probability
 
+    main()
 
-    servers = [SimpleHttpServerAdapter(port) for port in range(PORT_START, PORT_START+config.number_of_servers)]
-    for server in servers:
-        server.start(config.min_servers_up, config.chance_to_stop)
 
-    print(f"servers are running: type anything to shut down")
-    wait = input()
-    for server in servers:
-        server.stop()
-    print("shutdown servers")
+
+
+    
