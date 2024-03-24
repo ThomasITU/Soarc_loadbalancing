@@ -42,7 +42,7 @@ From terminal
 
 ```pwsh
 docker exec -it my-running-haproxy sh -c "python /usr/local/src/main.py -s <#no of servers> -m <minimum #no of servers to keep alive> -p <chance of server shutting down>"
-docker exec -it my-running-haproxy sh -c "python /usr/local/src/main.py -s 10 -m 5 -p 0.01"
+docker exec -d my-running-haproxy sh -c "python /usr/local/src/main.py -s 10 -m 5 -p 0.01"
 
 ```
 
@@ -74,11 +74,16 @@ Spawn pythonClients accessing the endpoint <http://localhost:8080/?integer=21> w
 
 ### Access metrics WORK in progress
 
-Logs are available in the Docker container /var/log/haproxy-traffic.log, maybe mount as volume?
+Logs are available in the Docker container /var/log/haproxy-traffic.log, also mounted
 
 More about the HAProxy logging and logging format [here](https://www.haproxy.com/blog/introduction-to-haproxy-logging).
-
 
 Access loadbalancer stats from url <http://localhost:8404/> this can be exported to csv. - See the total column for # of succes/errors response ![Display of stats](imgs/Stats.png)
 
 Explore more info about the HAProxy stats page [here](https://www.haproxy.com/blog/exploring-the-haproxy-stats-page).
+
+clear the stats page from inside the docker container
+
+```sh
+echo "clear counters all" | socat unix-connect:/var/run/haproxy.sock stdio
+```
