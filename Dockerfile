@@ -11,7 +11,7 @@ COPY conf/haproxy.conf /etc/rsyslog.d/haproxy.conf
 USER root
 
 # install python and syslog, Configure rsyslog to start at boot,
-RUN apk update && apk add --no-cache bash python3 rsyslog openrc && \
+RUN apk update && apk add --no-cache bash python3 rsyslog openrc socat && \
     rc-update add rsyslog default
 
 #  Make the startup script executable
